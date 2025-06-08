@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { StickyNote, CheckSquare, Settings, Search, Download, Upload, Star } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
@@ -7,6 +6,7 @@ import TodoModule from '../components/TodoModule';
 import TodaysFocus from '../components/TodaysFocus';
 import SearchBar from '../components/SearchBar';
 import ExportImport from '../components/ExportImport';
+import DarkModeToggle from '../components/DarkModeToggle';
 import { Note, Todo } from '../types';
 
 const Index = () => {
@@ -16,16 +16,19 @@ const Index = () => {
   const [focusedTasks, setFocusedTasks] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
 
   // Load data from localStorage on mount
   useEffect(() => {
     const savedNotes = localStorage.getItem('notepad-notes');
     const savedTodos = localStorage.getItem('notepad-todos');
     const savedFocus = localStorage.getItem('notepad-focus');
+    const savedDarkMode = localStorage.getItem('notepad-darkmode');
 
     if (savedNotes) setNotes(JSON.parse(savedNotes));
     if (savedTodos) setTodos(JSON.parse(savedTodos));
     if (savedFocus) setFocusedTasks(JSON.parse(savedFocus));
+    if (savedDarkMode) setDarkMode(JSON.parse(savedDarkMode));
   }, []);
 
   // Save to localStorage whenever data changes
@@ -40,6 +43,15 @@ const Index = () => {
   useEffect(() => {
     localStorage.setItem('notepad-focus', JSON.stringify(focusedTasks));
   }, [focusedTasks]);
+
+  useEffect(() => {
+    localStorage.setItem('notepad-darkmode', JSON.stringify(darkMode));
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
 
   const filteredNotes = notes.filter(note => 
     note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -62,7 +74,7 @@ const Index = () => {
                 searchQuery={searchQuery}
               />
             </div>
-            <div className="w-80 border-l border-gray-200 p-6">
+            <div className="w-80 border-l border-gray-200 dark:border-gray-700 p-6">
               <TodaysFocus 
                 todos={todos}
                 focusedTasks={focusedTasks}
@@ -101,7 +113,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex">
+    <div className="min-h-screen bg-white dark:bg-gray-900 flex transition-colors duration-300">
       <Sidebar 
         activeModule={activeModule}
         setActiveModule={setActiveModule}
@@ -111,23 +123,26 @@ const Index = () => {
       
       <div className="flex-1 flex flex-col">
         {/* Top Bar */}
-        <div className="border-b border-gray-200 bg-white sticky top-0 z-10">
+        <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 sticky top-0 z-10">
           <div className="flex items-center justify-between px-6 py-4">
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-300"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-300"
               >
                 <div className="w-5 h-5 flex flex-col justify-center space-y-1">
-                  <div className="h-0.5 bg-black"></div>
-                  <div className="h-0.5 bg-black"></div>
-                  <div className="h-0.5 bg-black"></div>
+                  <div className="h-0.5 bg-black dark:bg-white"></div>
+                  <div className="h-0.5 bg-black dark:bg-white"></div>
+                  <div className="h-0.5 bg-black dark:bg-white"></div>
                 </div>
               </button>
-              <h1 className="text-xl font-bold">NoteFlow</h1>
+              <h1 className="text-xl font-bold text-black dark:text-white">NoteFlow</h1>
             </div>
             
-            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+            <div className="flex items-center space-x-4">
+              <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+              <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
+            </div>
           </div>
         </div>
 
