@@ -17,8 +17,28 @@ export interface Todo {
   createdAt: Date;
 }
 
+export interface StoredFile {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+  url: string;
+  uploadedAt: Date;
+}
+
+export interface StoredLink {
+  id: string;
+  title: string;
+  url: string;
+  favicon?: string;
+  description?: string;
+  createdAt: Date;
+}
+
 export interface AppData {
   notes: Note[];
   todos: Todo[];
   focusedTasks: string[];
+  files: StoredFile[];
+  links: StoredLink[];
 }

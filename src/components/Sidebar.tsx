@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { StickyNote, CheckSquare, Settings, Star } from 'lucide-react';
+import { StickyNote, CheckSquare, Settings, Star, FolderLock, Link } from 'lucide-react';
 
 interface SidebarProps {
-  activeModule: 'notes' | 'todos' | 'settings';
-  setActiveModule: (module: 'notes' | 'todos' | 'settings') => void;
+  activeModule: 'notes' | 'todos' | 'locker' | 'links' | 'settings';
+  setActiveModule: (module: 'notes' | 'todos' | 'locker' | 'links' | 'settings') => void;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
 }
@@ -13,6 +13,8 @@ const Sidebar = ({ activeModule, setActiveModule, isOpen, setIsOpen }: SidebarPr
   const menuItems = [
     { id: 'notes', label: 'Notes', icon: StickyNote, color: '#3B82F6' },
     { id: 'todos', label: 'To-Do List', icon: CheckSquare, color: '#10B981' },
+    { id: 'locker', label: 'Locker', icon: FolderLock, color: '#8B5CF6' },
+    { id: 'links', label: 'Links', icon: Link, color: '#F59E0B' },
     { id: 'settings', label: 'Settings', icon: Settings, color: '#6B7280' },
   ];
 

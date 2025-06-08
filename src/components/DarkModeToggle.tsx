@@ -15,9 +15,9 @@ const DarkModeToggle = ({ darkMode, setDarkMode }: DarkModeToggleProps) => {
       <Switch
         checked={darkMode}
         onCheckedChange={setDarkMode}
-        className="data-[state=checked]:bg-gray-800 data-[state=unchecked]:bg-gray-200"
+        className="data-[state=checked]:bg-black data-[state=unchecked]:bg-gray-200"
       />
-      <Moon size={16} className="text-blue-500" />
+      <Moon size={16} className="text-gray-800 dark:text-gray-200" />
     </div>
   );
 };
