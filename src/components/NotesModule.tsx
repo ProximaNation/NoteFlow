@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Plus, Pin, Edit, Trash2, Copy, Save } from 'lucide-react';
+import { Plus, Pin, Edit, Trash2, Copy, Save, StickyNote } from 'lucide-react';
 import { Note } from '../types';
 
 interface NotesModuleProps {

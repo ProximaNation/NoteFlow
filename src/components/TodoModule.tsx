@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Plus, Calendar, Flag, Trash2, Edit2, Check, Star } from 'lucide-react';
+import { Plus, Calendar, Flag, Trash2, Edit2, Check, Star, CheckSquare } from 'lucide-react';
 import { Todo } from '../types';
 
 interface TodoModuleProps {
