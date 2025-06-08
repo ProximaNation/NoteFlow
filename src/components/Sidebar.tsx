@@ -20,13 +20,13 @@ const Sidebar = ({ activeModule, setActiveModule, isOpen, setIsOpen }: SidebarPr
 
   if (!isOpen) {
     return (
-      <div className="w-16 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 flex flex-col items-center py-6 space-y-4">
+      <div className="w-16 border-r border-border bg-card flex flex-col items-center py-6 space-y-4">
         {menuItems.map((item) => (
           <button
             key={item.id}
             onClick={() => setActiveModule(item.id as any)}
             className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-105 ${
-              activeModule === item.id ? 'bg-gray-100 dark:bg-gray-800' : 'hover:bg-gray-50 dark:hover:bg-gray-800'
+              activeModule === item.id ? 'bg-accent' : 'hover:bg-accent'
             }`}
           >
             <item.icon 
@@ -40,13 +40,13 @@ const Sidebar = ({ activeModule, setActiveModule, isOpen, setIsOpen }: SidebarPr
   }
 
   return (
-    <div className="w-64 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 flex flex-col">
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+    <div className="w-64 border-r border-border bg-card flex flex-col">
+      <div className="p-6 border-b border-border">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-black dark:bg-white rounded-lg flex items-center justify-center">
-            <Star size={16} className="text-white dark:text-black" />
+          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+            <Star size={16} className="text-primary-foreground" />
           </div>
-          <span className="font-bold text-lg text-gray-900 dark:text-gray-100">NoteFlow</span>
+          <span className="font-bold text-lg text-card-foreground">NoteFlow</span>
         </div>
       </div>
 
@@ -58,23 +58,23 @@ const Sidebar = ({ activeModule, setActiveModule, isOpen, setIsOpen }: SidebarPr
                 onClick={() => setActiveModule(item.id as any)}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 hover:scale-[1.02] ${
                   activeModule === item.id 
-                    ? 'bg-gray-100 dark:bg-gray-800 shadow-sm' 
-                    : 'hover:bg-gray-50 dark:hover:bg-gray-800'
+                    ? 'bg-accent shadow-sm' 
+                    : 'hover:bg-accent'
                 }`}
               >
                 <item.icon 
                   size={20} 
                   style={{ color: item.color }}
                 />
-                <span className="font-medium text-gray-900 dark:text-gray-100">{item.label}</span>
+                <span className="font-medium text-card-foreground">{item.label}</span>
               </button>
             </li>
           ))}
         </ul>
       </nav>
 
-      <div className="p-6 border-t border-gray-200 dark:border-gray-700">
-        <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+      <div className="p-6 border-t border-border">
+        <div className="text-xs text-muted-foreground text-center">
           © 2024 NoteFlow
         </div>
       </div>

@@ -17,16 +17,28 @@ const LockerModule = ({ files, setFiles }: LockerModuleProps) => {
     formData.append('reqtype', 'fileupload');
     formData.append('fileToUpload', file);
 
-    const response = await fetch('https://catbox.moe/user/api.php', {
-      method: 'POST',
-      body: formData,
-    });
+    try {
+      const response = await fetch('https://catbox.moe/user/api.php', {
+        method: 'POST',
+        body: formData,
+        mode: 'cors'
+      });
 
-    if (!response.ok) {
-      throw new Error('Upload failed');
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.status}`);
+      }
+
+      const result = await response.text();
+      
+      if (!result || result.includes('error') || result.includes('Error')) {
+        throw new Error('Upload failed: Invalid response from server');
+      }
+
+      return result.trim();
+    } catch (error) {
+      console.error('Catbox upload error:', error);
+      throw new Error('Upload failed. Please try again.');
     }
-
-    return await response.text();
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,14 +50,16 @@ const LockerModule = ({ files, setFiles }: LockerModuleProps) => {
 
     try {
       for (const file of Array.from(selectedFiles)) {
+        console.log('Uploading file:', file.name);
         const url = await uploadToCatbox(file);
+        console.log('Upload successful:', url);
         
         const storedFile: StoredFile = {
           id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
           name: file.name,
           size: file.size,
           type: file.type,
-          url: url.trim(),
+          url: url,
           uploadedAt: new Date(),
         };
 
@@ -55,7 +69,7 @@ const LockerModule = ({ files, setFiles }: LockerModuleProps) => {
       setFiles([...files, ...newFiles]);
     } catch (error) {
       console.error('Upload failed:', error);
-      alert('Upload failed. Please try again.');
+      alert(error instanceof Error ? error.message : 'Upload failed. Please try again.');
     } finally {
       setUploading(false);
       if (fileInputRef.current) {
@@ -84,10 +98,10 @@ const LockerModule = ({ files, setFiles }: LockerModuleProps) => {
   };
 
   return (
-    <div className="flex-1 p-8">
+    <div className="flex-1 p-8 bg-background">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">File Locker</h1>
+          <h1 className="text-3xl font-bold text-foreground">File Locker</h1>
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
@@ -108,9 +122,9 @@ const LockerModule = ({ files, setFiles }: LockerModuleProps) => {
 
         {files.length === 0 ? (
           <div className="text-center py-16">
-            <FolderOpen size={64} className="mx-auto text-gray-400 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">No files uploaded yet</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">Upload your documents, images, and files to keep them safe</p>
+            <FolderOpen size={64} className="mx-auto text-muted-foreground mb-4" />
+            <h3 className="text-xl font-semibold text-foreground mb-2">No files uploaded yet</h3>
+            <p className="text-muted-foreground mb-6">Upload your documents, images, and files to keep them safe</p>
             <button
               onClick={() => fileInputRef.current?.click()}
               className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg flex items-center space-x-2 mx-auto transition-colors duration-300"
@@ -124,7 +138,7 @@ const LockerModule = ({ files, setFiles }: LockerModuleProps) => {
             {files.map((file) => {
               const FileIcon = getFileIcon(file.type);
               return (
-                <div key={file.id} className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow duration-300">
+                <div key={file.id} className="bg-card rounded-lg border border-border p-6 hover:shadow-lg transition-all duration-300 hover:border-purple-400">
                   <div className="flex items-start justify-between mb-4">
                     <FileIcon size={32} className="text-purple-600" />
                     <button
@@ -135,15 +149,15 @@ const LockerModule = ({ files, setFiles }: LockerModuleProps) => {
                     </button>
                   </div>
                   
-                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 truncate" title={file.name}>
+                  <h3 className="font-semibold text-card-foreground mb-2 truncate" title={file.name}>
                     {file.name}
                   </h3>
                   
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  <p className="text-sm text-muted-foreground mb-2">
                     {formatFileSize(file.size)}
                   </p>
                   
-                  <p className="text-xs text-gray-500 dark:text-gray-500 mb-4">
+                  <p className="text-xs text-muted-foreground mb-4">
                     {new Date(file.uploadedAt).toLocaleDateString()}
                   </p>
                   
@@ -151,7 +165,7 @@ const LockerModule = ({ files, setFiles }: LockerModuleProps) => {
                     href={file.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 text-sm transition-colors duration-300"
+                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 text-sm transition-colors duration-300 w-full justify-center"
                   >
                     <Download size={16} />
                     <span>Download</span>

@@ -33,6 +33,7 @@ export interface StoredLink {
   favicon?: string;
   description?: string;
   createdAt: Date;
+  bookmarked?: boolean;
 }
 
 export interface AppData {

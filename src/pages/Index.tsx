@@ -100,7 +100,7 @@ const Index = () => {
                 searchQuery={searchQuery}
               />
             </div>
-            <div className="w-80 border-l border-gray-200 dark:border-gray-700 p-6">
+            <div className="w-80 border-l border-border p-6 bg-card">
               <TodaysFocus 
                 todos={todos}
                 focusedTasks={focusedTasks}
@@ -135,14 +135,18 @@ const Index = () => {
         );
       case 'settings':
         return (
-          <div className="flex-1 p-8">
-            <h1 className="text-2xl font-bold mb-8">Settings</h1>
+          <div className="flex-1 p-8 bg-background">
+            <h1 className="text-2xl font-bold mb-8 text-foreground">Settings</h1>
             <ExportImport 
               notes={notes}
               todos={todos}
+              files={files}
+              links={links}
               focusedTasks={focusedTasks}
               setNotes={setNotes}
               setTodos={setTodos}
+              setFiles={setFiles}
+              setLinks={setLinks}
               setFocusedTasks={setFocusedTasks}
             />
           </div>
@@ -153,7 +157,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black flex transition-colors duration-300">
+    <div className="min-h-screen bg-background flex transition-colors duration-300">
       <Sidebar 
         activeModule={activeModule}
         setActiveModule={setActiveModule}
@@ -163,20 +167,20 @@ const Index = () => {
       
       <div className="flex-1 flex flex-col">
         {/* Top Bar */}
-        <div className="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-black sticky top-0 z-10">
+        <div className="border-b border-border bg-card sticky top-0 z-10">
           <div className="flex items-center justify-between px-6 py-4">
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg transition-colors duration-300"
+                className="p-2 hover:bg-accent rounded-lg transition-colors duration-300"
               >
                 <div className="w-5 h-5 flex flex-col justify-center space-y-1">
-                  <div className="h-0.5 bg-black dark:bg-white"></div>
-                  <div className="h-0.5 bg-black dark:bg-white"></div>
-                  <div className="h-0.5 bg-black dark:bg-white"></div>
+                  <div className="h-0.5 bg-foreground"></div>
+                  <div className="h-0.5 bg-foreground"></div>
+                  <div className="h-0.5 bg-foreground"></div>
                 </div>
               </button>
-              <h1 className="text-xl font-bold text-black dark:text-white">NoteFlow</h1>
+              <h1 className="text-xl font-bold text-foreground">NoteFlow</h1>
             </div>
             
             <div className="flex items-center space-x-4">
