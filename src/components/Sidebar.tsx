@@ -16,7 +16,7 @@ const Sidebar = ({ activeModule, setActiveModule, isOpen, setIsOpen }: SidebarPr
   const menuItems = [
     { id: 'notes', label: 'Notes', icon: StickyNote, color: '#3B82F6' },
     { id: 'todos', label: 'To-Do List', icon: CheckSquare, color: '#10B981' },
-    { id: 'locker', label: 'Secure Locker', icon: FolderLock, color: '#8B5CF6' },
+    { id: 'locker', label: 'Locker', icon: FolderLock, color: '#8B5CF6' },
     { id: 'links', label: 'Bookmarks', icon: Link, color: '#F59E0B' },
     { id: 'settings', label: 'Settings', icon: Settings, color: '#6B7280' },
   ];
@@ -55,8 +55,8 @@ const Sidebar = ({ activeModule, setActiveModule, isOpen, setIsOpen }: SidebarPr
     <div className="w-64 border-r border-border bg-card flex flex-col">
       <div className="p-6 border-b border-border">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <Star size={16} className="text-primary-foreground" />
+          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
+            <StickyNote size={16} className="text-white" />
           </div>
           <span className="font-bold text-lg text-card-foreground">NoteFlow</span>
         </div>

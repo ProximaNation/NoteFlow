@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Upload, Download, Trash2, File, Image, Video, FileText, FolderOpen, Lock, Unlock, Eye, EyeOff } from 'lucide-react';
+import { Upload, Download, Trash2, File, Image, Video, FileText, FolderOpen, Lock, Eye, EyeOff, ExternalLink } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -22,6 +22,7 @@ const SecureLockerModule = () => {
   const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [filePassword, setFilePassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [previewFile, setPreviewFile] = useState<SecureFile | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const { user } = useAuth();
@@ -51,41 +52,45 @@ const SecureLockerModule = () => {
   const uploadFileToSupabase = async (file: File, password?: string) => {
     if (!user) return null;
 
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${user.id}/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
 
-    const { data, error } = await supabase.storage
-      .from('user-files')
-      .upload(fileName, file);
+      const { data, error } = await supabase.storage
+        .from('user-files')
+        .upload(fileName, file);
 
-    if (error) throw error;
+      if (error) throw error;
 
-    const { data: { publicUrl } } = supabase.storage
-      .from('user-files')
-      .getPublicUrl(fileName);
+      const { data: { publicUrl } } = supabase.storage
+        .from('user-files')
+        .getPublicUrl(fileName);
 
-    // Hash password if provided
-    let passwordHash = null;
-    if (password) {
-      passwordHash = await hashPassword(password);
+      let passwordHash = null;
+      if (password) {
+        passwordHash = await hashPassword(password);
+      }
+
+      const { data: fileRecord, error: dbError } = await supabase
+        .from('secure_files')
+        .insert({
+          user_id: user.id,
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          url: publicUrl,
+          password_hash: passwordHash,
+          is_password_protected: !!password
+        })
+        .select()
+        .single();
+
+      if (dbError) throw dbError;
+      return fileRecord;
+    } catch (error) {
+      console.error('Upload error:', error);
+      throw error;
     }
-
-    const { data: fileRecord, error: dbError } = await supabase
-      .from('secure_files')
-      .insert({
-        user_id: user.id,
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        url: publicUrl,
-        password_hash: passwordHash,
-        is_password_protected: !!password
-      })
-      .select()
-      .single();
-
-    if (dbError) throw dbError;
-    return fileRecord;
   };
 
   const hashPassword = async (password: string): Promise<string> => {
@@ -131,15 +136,15 @@ const SecureLockerModule = () => {
 
   const deleteFile = async (file: SecureFile) => {
     try {
-      // Delete from storage
-      const fileName = file.url.split('/').pop();
+      const urlParts = file.url.split('/');
+      const fileName = urlParts[urlParts.length - 1];
+      
       if (fileName) {
         await supabase.storage
           .from('user-files')
           .remove([`${user?.id}/${fileName}`]);
       }
 
-      // Delete from database
       const { error } = await supabase
         .from('secure_files')
         .delete()
@@ -165,8 +170,39 @@ const SecureLockerModule = () => {
   const getFileIcon = (type: string) => {
     if (type.startsWith('image/')) return Image;
     if (type.startsWith('video/')) return Video;
-    if (type.includes('text') || type.includes('document')) return FileText;
+    if (type.includes('text') || type.includes('document') || type === 'application/pdf') return FileText;
     return File;
+  };
+
+  const canPreview = (type: string) => {
+    return type.startsWith('image/') || 
+           type.startsWith('video/') || 
+           type === 'application/pdf' ||
+           type.startsWith('text/');
+  };
+
+  const previewFileContent = (file: SecureFile) => {
+    if (file.type.startsWith('image/')) {
+      return <img src={file.url} alt={file.name} className="max-w-full max-h-96 object-contain" />;
+    }
+    if (file.type.startsWith('video/')) {
+      return <video src={file.url} controls className="max-w-full max-h-96" />;
+    }
+    if (file.type === 'application/pdf') {
+      return (
+        <iframe 
+          src={file.url} 
+          className="w-full h-96 border border-border rounded"
+          title={file.name}
+        />
+      );
+    }
+    return (
+      <div className="text-center py-8">
+        <FileText size={48} className="mx-auto text-muted-foreground mb-4" />
+        <p className="text-muted-foreground">Preview not available for this file type</p>
+      </div>
+    );
   };
 
   if (loading) {
@@ -247,15 +283,26 @@ const SecureLockerModule = () => {
                     {new Date(file.uploaded_at).toLocaleDateString()}
                   </p>
                   
-                  <a
-                    href={file.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 text-sm transition-colors duration-300 w-full justify-center"
-                  >
-                    <Download size={16} />
-                    <span>Download</span>
-                  </a>
+                  <div className="flex space-x-2">
+                    {canPreview(file.type) && (
+                      <button
+                        onClick={() => setPreviewFile(file)}
+                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 text-sm transition-colors duration-300 justify-center"
+                      >
+                        <Eye size={16} />
+                        <span>Preview</span>
+                      </button>
+                    )}
+                    <a
+                      href={file.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`${canPreview(file.type) ? 'flex-1' : 'w-full'} bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 text-sm transition-colors duration-300 justify-center`}
+                    >
+                      <Download size={16} />
+                      <span>Download</span>
+                    </a>
+                  </div>
                 </div>
               );
             })}
@@ -313,6 +360,40 @@ const SecureLockerModule = () => {
                 >
                   {uploading ? 'Uploading...' : 'Upload'}
                 </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Preview Modal */}
+        {previewFile && (
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+            <div className="bg-card rounded-lg border border-border max-w-4xl w-full max-h-[90vh] overflow-auto">
+              <div className="flex items-center justify-between p-6 border-b border-border">
+                <h3 className="text-lg font-semibold text-card-foreground truncate">
+                  {previewFile.name}
+                </h3>
+                <div className="flex items-center space-x-3">
+                  <a
+                    href={previewFile.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 hover:bg-accent rounded-lg transition-colors"
+                  >
+                    <ExternalLink size={20} className="text-muted-foreground" />
+                  </a>
+                  <button
+                    onClick={() => setPreviewFile(null)}
+                    className="p-2 hover:bg-accent rounded-lg transition-colors"
+                  >
+                    <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div className="p-6">
+                {previewFileContent(previewFile)}
               </div>
             </div>
           </div>
