@@ -106,9 +106,82 @@
     @apply bg-background text-foreground border-border;
   }
 
-  /* Fix button elements */
+  /* Fix button elements - ensure they inherit proper colors */
   button {
     @apply text-foreground;
+  }
+
+  /* Ensure button text is always visible */
+  button * {
+    @apply text-inherit;
+  }
+
+  /* Fix specific button backgrounds */
+  .bg-black {
+    @apply !bg-primary !text-primary-foreground;
+  }
+
+  .bg-gray-100 {
+    @apply !bg-secondary !text-secondary-foreground;
+  }
+
+  .bg-gray-800 {
+    @apply !bg-accent !text-accent-foreground;
+  }
+
+  /* Fix text colors */
+  .text-gray-800 {
+    @apply !text-foreground;
+  }
+
+  .text-gray-700 {
+    @apply !text-foreground;
+  }
+
+  .text-gray-600 {
+    @apply !text-muted-foreground;
+  }
+
+  .text-gray-500 {
+    @apply !text-muted-foreground;
+  }
+
+  .text-gray-400 {
+    @apply !text-muted-foreground;
+  }
+
+  .text-gray-300 {
+    @apply !text-muted-foreground;
+  }
+
+  .text-white {
+    @apply !text-primary-foreground;
+  }
+
+  /* Fix background colors */
+  .bg-white {
+    @apply !bg-card;
+  }
+
+  .bg-gray-50 {
+    @apply !bg-muted;
+  }
+
+  .bg-gray-100 {
+    @apply !bg-secondary;
+  }
+
+  .bg-gray-200 {
+    @apply !bg-border;
+  }
+
+  /* Fix border colors */
+  .border-gray-200 {
+    @apply !border-border;
+  }
+
+  .border-gray-300 {
+    @apply !border-border;
   }
 
   /* Fix modal backgrounds */
@@ -150,6 +223,21 @@
   /* Fix selection colors */
   ::selection {
     @apply bg-primary text-primary-foreground;
+  }
+
+  /* Force theme colors for any remaining hardcoded elements */
+  [data-lov-id] * {
+    @apply border-border;
+  }
+
+  [data-lov-id] input,
+  [data-lov-id] textarea,
+  [data-lov-id] select {
+    @apply bg-background text-foreground border-border;
+  }
+
+  [data-lov-id] button {
+    @apply text-foreground;
   }
 }
 
