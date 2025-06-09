@@ -95,4 +95,107 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Fix all dark mode text and background issues */
+  .dark input {
+    @apply bg-input text-foreground;
+  }
+
+  .dark textarea {
+    @apply bg-input text-foreground;
+  }
+
+  .dark select {
+    @apply bg-input text-foreground;
+  }
+
+  .dark button {
+    @apply text-foreground;
+  }
+
+  /* Fix dropdown backgrounds */
+  .dark [data-radix-select-content] {
+    @apply bg-card border-border;
+  }
+
+  .dark [data-radix-select-item] {
+    @apply text-card-foreground;
+  }
+
+  /* Fix any remaining light backgrounds in dark mode */
+  .dark .bg-white {
+    @apply bg-card;
+  }
+
+  .dark .bg-gray-50 {
+    @apply bg-muted;
+  }
+
+  .dark .bg-gray-100 {
+    @apply bg-accent;
+  }
+
+  .dark .text-gray-800 {
+    @apply text-card-foreground;
+  }
+
+  .dark .text-gray-700 {
+    @apply text-card-foreground;
+  }
+
+  .dark .text-gray-600 {
+    @apply text-muted-foreground;
+  }
+
+  .dark .text-gray-500 {
+    @apply text-muted-foreground;
+  }
+
+  .dark .border-gray-200 {
+    @apply border-border;
+  }
+
+  .dark .border-gray-300 {
+    @apply border-border;
+  }
+
+  /* Fix switch component dark mode */
+  .dark [data-state="checked"] {
+    background-color: hsl(var(--primary)) !important;
+  }
+
+  .dark [data-state="unchecked"] {
+    background-color: hsl(var(--muted)) !important;
+  }
+}
+
+/* Custom animations for gamification */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.2s ease-out;
 }

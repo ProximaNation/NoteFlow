@@ -10,14 +10,14 @@ interface DarkModeToggleProps {
 
 const DarkModeToggle = ({ darkMode, setDarkMode }: DarkModeToggleProps) => {
   return (
-    <div className="flex items-center space-x-2">
-      <Sun size={16} className="text-yellow-500" />
+    <div className="flex items-center space-x-2 p-2 rounded-lg bg-card dark:bg-card border border-border dark:border-border">
+      <Sun size={16} className="text-yellow-500 dark:text-yellow-400" />
       <Switch
         checked={darkMode}
         onCheckedChange={setDarkMode}
-        className="data-[state=checked]:bg-black data-[state=unchecked]:bg-gray-200"
+        className="data-[state=checked]:bg-primary data-[state=unchecked]:bg-muted"
       />
-      <Moon size={16} className="text-gray-800 dark:text-gray-200" />
+      <Moon size={16} className="text-gray-600 dark:text-gray-300" />
     </div>
   );
 };

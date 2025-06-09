@@ -16,7 +16,7 @@ const Sidebar = ({ activeModule, setActiveModule, isOpen, setIsOpen }: SidebarPr
   const menuItems = [
     { id: 'notes', label: 'Notes', icon: StickyNote, color: '#3B82F6' },
     { id: 'todos', label: 'To-Do List', icon: CheckSquare, color: '#10B981' },
-    { id: 'locker', label: 'Secure Locker', icon: FolderLock, color: '#8B5CF6' },
+    { id: 'locker', label: 'Locker', icon: FolderLock, color: '#8B5CF6' },
     { id: 'links', label: 'Bookmarks', icon: Link, color: '#F59E0B' },
     { id: 'settings', label: 'Settings', icon: Settings, color: '#6B7280' },
   ];
