@@ -4,15 +4,17 @@ import { StickyNote, CheckSquare, Settings, Search, Download, Upload, Star } fro
 import Sidebar from '../components/Sidebar';
 import NotesModule from '../components/NotesModule';
 import TodoModule from '../components/TodoModule';
-import LockerModule from '../components/LockerModule';
-import LinksModule from '../components/LinksModule';
+import SecureLockerModule from '../components/SecureLockerModule';
+import BookmarkManager from '../components/BookmarkManager';
 import TodaysFocus from '../components/TodaysFocus';
 import SearchBar from '../components/SearchBar';
 import ExportImport from '../components/ExportImport';
 import DarkModeToggle from '../components/DarkModeToggle';
+import Auth from '../components/Auth';
+import { AuthProvider, useAuth } from '../hooks/useAuth';
 import { Note, Todo, StoredFile, StoredLink } from '../types';
 
-const Index = () => {
+const AppContent = () => {
   const [activeModule, setActiveModule] = useState<'notes' | 'todos' | 'locker' | 'links' | 'settings'>('notes');
   const [notes, setNotes] = useState<Note[]>([]);
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -23,44 +25,21 @@ const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
 
-  // Load data from localStorage on mount
-  useEffect(() => {
-    const savedNotes = localStorage.getItem('notepad-notes');
-    const savedTodos = localStorage.getItem('notepad-todos');
-    const savedFiles = localStorage.getItem('notepad-files');
-    const savedLinks = localStorage.getItem('notepad-links');
-    const savedFocus = localStorage.getItem('notepad-focus');
-    const savedDarkMode = localStorage.getItem('notepad-darkmode');
+  const { user, loading } = useAuth();
 
-    if (savedNotes) setNotes(JSON.parse(savedNotes));
-    if (savedTodos) setTodos(JSON.parse(savedTodos));
-    if (savedFiles) setFiles(JSON.parse(savedFiles));
-    if (savedLinks) setLinks(JSON.parse(savedLinks));
-    if (savedFocus) setFocusedTasks(JSON.parse(savedFocus));
-    if (savedDarkMode) setDarkMode(JSON.parse(savedDarkMode));
+  // Load dark mode preference
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem('notepad-darkmode');
+    if (savedDarkMode) {
+      const isDark = JSON.parse(savedDarkMode);
+      setDarkMode(isDark);
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      }
+    }
   }, []);
 
-  // Save to localStorage whenever data changes
-  useEffect(() => {
-    localStorage.setItem('notepad-notes', JSON.stringify(notes));
-  }, [notes]);
-
-  useEffect(() => {
-    localStorage.setItem('notepad-todos', JSON.stringify(todos));
-  }, [todos]);
-
-  useEffect(() => {
-    localStorage.setItem('notepad-files', JSON.stringify(files));
-  }, [files]);
-
-  useEffect(() => {
-    localStorage.setItem('notepad-links', JSON.stringify(links));
-  }, [links]);
-
-  useEffect(() => {
-    localStorage.setItem('notepad-focus', JSON.stringify(focusedTasks));
-  }, [focusedTasks]);
-
+  // Save dark mode preference
   useEffect(() => {
     localStorage.setItem('notepad-darkmode', JSON.stringify(darkMode));
     if (darkMode) {
@@ -69,6 +48,18 @@ const Index = () => {
       document.documentElement.classList.remove('dark');
     }
   }, [darkMode]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-foreground">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Auth />;
+  }
 
   const filteredNotes = notes.filter(note => 
     note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -120,19 +111,9 @@ const Index = () => {
           />
         );
       case 'locker':
-        return (
-          <LockerModule 
-            files={filteredFiles}
-            setFiles={setFiles}
-          />
-        );
+        return <SecureLockerModule />;
       case 'links':
-        return (
-          <LinksModule 
-            links={filteredLinks}
-            setLinks={setLinks}
-          />
-        );
+        return <BookmarkManager />;
       case 'settings':
         return (
           <div className="flex-1 p-8 bg-background">
@@ -194,6 +175,14 @@ const Index = () => {
         {renderMainContent()}
       </div>
     </div>
+  );
+};
+
+const Index = () => {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 };
 

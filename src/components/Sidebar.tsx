@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { StickyNote, CheckSquare, Settings, Star, FolderLock, Link } from 'lucide-react';
+import { StickyNote, CheckSquare, Settings, Star, FolderLock, Link, LogOut } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 interface SidebarProps {
   activeModule: 'notes' | 'todos' | 'locker' | 'links' | 'settings';
@@ -10,11 +11,13 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ activeModule, setActiveModule, isOpen, setIsOpen }: SidebarProps) => {
+  const { signOut, user } = useAuth();
+
   const menuItems = [
     { id: 'notes', label: 'Notes', icon: StickyNote, color: '#3B82F6' },
     { id: 'todos', label: 'To-Do List', icon: CheckSquare, color: '#10B981' },
-    { id: 'locker', label: 'Locker', icon: FolderLock, color: '#8B5CF6' },
-    { id: 'links', label: 'Links', icon: Link, color: '#F59E0B' },
+    { id: 'locker', label: 'Secure Locker', icon: FolderLock, color: '#8B5CF6' },
+    { id: 'links', label: 'Bookmarks', icon: Link, color: '#F59E0B' },
     { id: 'settings', label: 'Settings', icon: Settings, color: '#6B7280' },
   ];
 
@@ -35,6 +38,15 @@ const Sidebar = ({ activeModule, setActiveModule, isOpen, setIsOpen }: SidebarPr
             />
           </button>
         ))}
+        
+        <div className="flex-1"></div>
+        
+        <button
+          onClick={signOut}
+          className="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-105 hover:bg-accent text-destructive"
+        >
+          <LogOut size={20} />
+        </button>
       </div>
     );
   }
@@ -74,6 +86,24 @@ const Sidebar = ({ activeModule, setActiveModule, isOpen, setIsOpen }: SidebarPr
       </nav>
 
       <div className="p-6 border-t border-border">
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
+            <span className="text-xs font-medium text-secondary-foreground">
+              {user?.email?.charAt(0).toUpperCase()}
+            </span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-card-foreground truncate">
+              {user?.email}
+            </p>
+          </div>
+          <button
+            onClick={signOut}
+            className="p-1 hover:bg-accent rounded text-muted-foreground hover:text-destructive transition-colors"
+          >
+            <LogOut size={16} />
+          </button>
+        </div>
         <div className="text-xs text-muted-foreground text-center">
           © 2024 NoteFlow
         </div>
