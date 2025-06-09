@@ -6,9 +6,9 @@ import NotesModule from '../components/NotesModule';
 import TodoModule from '../components/TodoModule';
 import SecureLockerModule from '../components/SecureLockerModule';
 import BookmarkManager from '../components/BookmarkManager';
+import SettingsModule from '../components/SettingsModule';
 import TodaysFocus from '../components/TodaysFocus';
 import SearchBar from '../components/SearchBar';
-import ExportImport from '../components/ExportImport';
 import DarkModeToggle from '../components/DarkModeToggle';
 import Auth from '../components/Auth';
 import { AuthProvider, useAuth } from '../hooks/useAuth';
@@ -29,7 +29,7 @@ const AppContent = () => {
 
   // Load dark mode preference
   useEffect(() => {
-    const savedDarkMode = localStorage.getItem('notepad-darkmode');
+    const savedDarkMode = localStorage.getItem('noteflow-darkmode');
     if (savedDarkMode) {
       const isDark = JSON.parse(savedDarkMode);
       setDarkMode(isDark);
@@ -41,7 +41,7 @@ const AppContent = () => {
 
   // Save dark mode preference
   useEffect(() => {
-    localStorage.setItem('notepad-darkmode', JSON.stringify(darkMode));
+    localStorage.setItem('noteflow-darkmode', JSON.stringify(darkMode));
     if (darkMode) {
       document.documentElement.classList.add('dark');
     } else {
@@ -116,21 +116,20 @@ const AppContent = () => {
         return <BookmarkManager />;
       case 'settings':
         return (
-          <div className="flex-1 p-8 bg-background">
-            <h1 className="text-2xl font-bold mb-8 text-foreground">Settings</h1>
-            <ExportImport 
-              notes={notes}
-              todos={todos}
-              files={files}
-              links={links}
-              focusedTasks={focusedTasks}
-              setNotes={setNotes}
-              setTodos={setTodos}
-              setFiles={setFiles}
-              setLinks={setLinks}
-              setFocusedTasks={setFocusedTasks}
-            />
-          </div>
+          <SettingsModule 
+            darkMode={darkMode}
+            setDarkMode={setDarkMode}
+            notes={notes}
+            todos={todos}
+            files={files}
+            links={links}
+            focusedTasks={focusedTasks}
+            setNotes={setNotes}
+            setTodos={setTodos}
+            setFiles={setFiles}
+            setLinks={setLinks}
+            setFocusedTasks={setFocusedTasks}
+          />
         );
       default:
         return null;
