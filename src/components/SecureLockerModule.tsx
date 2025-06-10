@@ -1,6 +1,5 @@
-
 import React, { useState, useRef } from 'react';
-import { Upload, Download, Trash2, File, Image, Video, FileText, FolderOpen, Lock, Unlock, Eye, EyeOff, Shield, Cloud } from 'lucide-react';
+import { Upload, Download, Trash2, File, Image, Video, FileText, FolderOpen, Lock, Eye, EyeOff, Shield, Cloud } from 'lucide-react';
 import { StoredFile } from '../types';
 
 interface SecureLockerModuleProps {
