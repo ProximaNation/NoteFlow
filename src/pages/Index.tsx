@@ -111,7 +111,12 @@ const AppContent = () => {
           />
         );
       case 'locker':
-        return <SecureLockerModule />;
+        return (
+          <SecureLockerModule 
+            files={filteredFiles}
+            setFiles={setFiles}
+          />
+        );
       case 'links':
         return <BookmarkManager />;
       case 'settings':
