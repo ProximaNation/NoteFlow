@@ -2,7 +2,7 @@
 import React from 'react';
 import { Star, Check } from 'lucide-react';
 import { Todo } from '../types';
-import GamificationPanel from './GamificationPanel';
+import Achievements from './Achievements';
 import SocialLinks from './SocialLinks';
 
 interface TodaysFocusProps {
@@ -17,7 +17,7 @@ const TodaysFocus = ({ todos, focusedTasks, setFocusedTasks }: TodaysFocusProps)
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-bold mb-4 flex items-center space-x-2 text-card-foreground dark:text-card-foreground">
+        <h2 className="text-lg font-bold mb-4 flex items-center space-x-2 text-card-foreground">
           <Star size={20} style={{ color: '#F59E0B' }} />
           <span>Today's Focus</span>
         </h2>
@@ -41,7 +41,7 @@ const TodaysFocus = ({ todos, focusedTasks, setFocusedTasks }: TodaysFocusProps)
                   {todo.completed && <Check size={12} className="text-white" />}
                 </button>
                 <span className={`text-sm font-medium ${
-                  todo.completed ? 'line-through text-muted-foreground dark:text-muted-foreground' : 'text-card-foreground dark:text-card-foreground'
+                  todo.completed ? 'line-through text-muted-foreground' : 'text-card-foreground'
                 }`}>
                   {todo.title}
                 </span>
@@ -51,16 +51,16 @@ const TodaysFocus = ({ todos, focusedTasks, setFocusedTasks }: TodaysFocusProps)
         </div>
 
         {focusedTodos.length === 0 && (
-          <div className="p-4 bg-muted dark:bg-muted border border-border dark:border-border rounded-lg text-center">
-            <Star size={32} className="mx-auto mb-2 text-muted-foreground dark:text-muted-foreground" />
-            <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+          <div className="p-4 bg-muted border border-border rounded-lg text-center">
+            <Star size={32} className="mx-auto mb-2 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">
               Select up to 3 important tasks to focus on today
             </p>
           </div>
         )}
       </div>
 
-      <GamificationPanel todos={todos} focusedTasks={focusedTasks} />
+      <Achievements todos={todos} focusedTasks={focusedTasks} />
       
       <SocialLinks />
     </div>
