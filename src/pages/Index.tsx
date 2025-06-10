@@ -1,10 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import { StickyNote, CheckSquare, Settings, Search, Download, Upload, Star } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import NotesModule from '../components/NotesModule';
 import TodoModule from '../components/TodoModule';
 import SecureLockerModule from '../components/SecureLockerModule';
-import EnhancedBookmarkManager from '../components/EnhancedBookmarkManager';
+import BookmarkManager from '../components/BookmarkManager';
 import TodaysFocus from '../components/TodaysFocus';
 import SearchBar from '../components/SearchBar';
 import ExportImport from '../components/ExportImport';
@@ -117,7 +118,7 @@ const AppContent = () => {
           />
         );
       case 'links':
-        return <EnhancedBookmarkManager links={filteredLinks} setLinks={setLinks} />;
+        return <BookmarkManager />;
       case 'settings':
         return (
           <div className="flex-1 p-8 bg-background">

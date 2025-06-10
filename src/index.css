@@ -167,34 +167,13 @@
     @apply border-border;
   }
 
-  /* Fix switch component dark mode with proper theme colors */
+  /* Fix switch component dark mode */
   .dark [data-state="checked"] {
     background-color: hsl(var(--primary)) !important;
   }
 
   .dark [data-state="unchecked"] {
     background-color: hsl(var(--muted)) !important;
-    border-color: hsl(var(--border)) !important;
-  }
-
-  /* Enhanced toggle switch styling */
-  [data-state="checked"] {
-    background-color: hsl(var(--primary));
-    border-color: hsl(var(--primary));
-  }
-
-  [data-state="unchecked"] {
-    background-color: hsl(var(--muted));
-    border-color: hsl(var(--border));
-  }
-
-  /* Toggle switch thumb styling */
-  .dark [data-state="checked"] > span {
-    background-color: hsl(var(--primary-foreground)) !important;
-  }
-
-  .dark [data-state="unchecked"] > span {
-    background-color: hsl(var(--muted-foreground)) !important;
   }
 
   /* Fix placeholder text in dark mode */
@@ -277,36 +256,6 @@
   .dark .hover\:bg-purple-700:hover {
     background-color: rgb(126 34 206) !important;
   }
-
-  /* Creative UI enhancements for data-lov-id elements */
-  [data-lov-id] {
-    @apply transition-all duration-300 ease-in-out;
-  }
-
-  [data-lov-id]:hover {
-    @apply scale-[1.02] shadow-lg;
-  }
-
-  /* Advanced creative styling for interactive elements */
-  .creative-card {
-    @apply bg-gradient-to-br from-card via-card to-accent border border-border rounded-xl shadow-sm hover:shadow-xl transition-all duration-500;
-  }
-
-  .dark .creative-card {
-    @apply from-card via-card to-accent;
-  }
-
-  .creative-button {
-    @apply bg-gradient-to-r from-primary to-primary/80 text-primary-foreground rounded-lg px-4 py-2 font-medium shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300;
-  }
-
-  .creative-input {
-    @apply bg-gradient-to-r from-background to-card border-2 border-border focus:border-ring focus:ring-2 focus:ring-ring/20 rounded-lg transition-all duration-300;
-  }
-
-  .dark .creative-input {
-    @apply from-background to-card;
-  }
 }
 
 /* Custom animations for gamification */
@@ -332,42 +281,10 @@
   }
 }
 
-@keyframes glow {
-  0%, 100% {
-    box-shadow: 0 0 10px hsl(var(--primary) / 0.3);
-  }
-  50% {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.6);
-  }
-}
-
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out;
 }
 
 .animate-scaleIn {
   animation: scaleIn 0.2s ease-out;
-}
-
-.animate-glow {
-  animation: glow 2s ease-in-out infinite;
-}
-
-/* Advanced UI patterns */
-.glass-effect {
-  @apply bg-card/80 backdrop-blur-sm border border-border/50;
-}
-
-.dark .glass-effect {
-  @apply bg-card/80 backdrop-blur-sm border-border/50;
-}
-
-.gradient-border {
-  background: linear-gradient(hsl(var(--card)), hsl(var(--card))) padding-box,
-              linear-gradient(45deg, hsl(var(--primary)), hsl(var(--accent))) border-box;
-  border: 2px solid transparent;
-}
-
-.floating-card {
-  @apply transform hover:translate-y-[-4px] transition-transform duration-300 shadow-md hover:shadow-xl;
 }
